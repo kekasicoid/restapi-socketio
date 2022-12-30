@@ -24,6 +24,7 @@ type KeluargaUsecase interface {
 	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
 	GetKeluarga(ctx context.Context, req *ReqGetKeluarga) (res []table.Orang, err error)
 	GetAllProduct(ctx context.Context) (res interface{}, err error)
+	GetProductById(ctx context.Context, req string) (res interface{}, err error)
 }
 
 type ReqGetKeluarga struct {

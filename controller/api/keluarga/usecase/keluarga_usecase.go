@@ -27,6 +27,32 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 	}
 }
 
+// GetProductById implements domain.KeluargaUsecase
+func (*KeluargaUsecase) GetProductById(ctx context.Context, req string) (res interface{}, err error) {
+	reqOption := httpclient.RequestOptions{
+		Payload:       nil,
+		URL:           viper.Get("VENDOR_PRODUCT_URL").(string) + "/" + req,
+		TimeoutSecond: 60,
+		Method:        http.MethodGet,
+		Context:       ctx,
+		Header: map[string]string{
+			httpclient.ContentType: httpclient.MediaTypeJSON,
+		},
+	}
+
+	resp, err := httpclient.Request(reqOption)
+	if err != nil {
+		kekasigohelper.LoggerWarning(err.Error())
+		return nil, errors.New(model.GENERAL_MSG_COMM)
+	}
+	if resp.Status() != http.StatusOK {
+		kekasigohelper.LoggerWarning("http.Do() error: " + string(resp.RawByte()))
+		return nil, errors.New(resp.String())
+	}
+	_ = json.Unmarshal(resp.RawByte(), &res)
+	return res, nil
+}
+
 // GetAllProduct implements domain.KeluargaUsecase
 func (*KeluargaUsecase) GetAllProduct(ctx context.Context) (res interface{}, err error) {
 	reqOption := httpclient.RequestOptions{

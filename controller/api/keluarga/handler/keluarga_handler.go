@@ -31,9 +31,38 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.POST("/keluarga/switch", handler.SwitchKeluarga)
 	g.POST("/keluarga/get", handler.GetKeluarga)
 	g.GET("/3rd/product/all", handler.GetAllProduct)
+	g.GET("/3rd/product/:id", handler.GetProductById)
 }
 
-// GetKeluarga godoc
+// GetProductById godoc
+// @tags 3rd Party
+// @description https://dummyjson.com/docs/products#single
+// @Param id path string true "Product ID"
+// @Accept  json
+// @Produce  json
+// @Router /3rd/product/{id} [get]
+func (k *KeluargaHandler) GetProductById(g *gin.Context) {
+	idStr := g.Param("id")
+	if err := k.validate.Var(idStr, "req-numeric"); err != nil {
+		kekasigohelper.LoggerWarning(err)
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidNumber)
+		return
+	}
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	data, err := k.keluargaUC.GetProductById(ctx, idStr)
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		return
+	}
+
+	model.HandleSuccess(g, data)
+}
+
+// GetAllProduct godoc
 // @tags 3rd Party
 // @description https://dummyjson.com/docs/products#all
 // @Accept  json

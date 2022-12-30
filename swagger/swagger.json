@@ -35,6 +35,30 @@
                 "responses": {}
             }
         },
+        "/3rd/product/{id}": {
+            "get": {
+                "description": "https://dummyjson.com/docs/products#single",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "3rd Party"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/keluarga/add": {
             "post": {
                 "description": "2.a Dapat menambahkan data orang baru ke keluarga (baru)",
