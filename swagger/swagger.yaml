@@ -53,6 +53,17 @@ definitions:
     required:
     - nama
     type: object
+  domain.ReqUpdatessetKeluarga:
+    properties:
+      id_keluarga:
+        type: integer
+      id_product:
+        type: integer
+      orang_tua:
+        type: integer
+      product_baru:
+        type: integer
+    type: object
   model.Response:
     properties:
       data: {}
@@ -125,7 +136,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Menampilkan anggota keluarga 1 tingkat di bawah
+      description: 2.d Dapat menambah data aset keluarga
       parameters:
       - description: Tambah Asset Keluarga
         in: body
@@ -133,6 +144,27 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.ReqAddAssetKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+  /keluarga/asset/update:
+    post:
+      consumes:
+      - application/json
+      description: 2.e Dapat mengedit data aset keluarga
+      parameters:
+      - description: Ubah Asset Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqUpdatessetKeluarga'
       produces:
       - application/json
       responses:

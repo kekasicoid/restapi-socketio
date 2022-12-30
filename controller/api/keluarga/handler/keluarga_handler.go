@@ -34,12 +34,65 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.GET("/3rd/product/all", handler.GetAllProduct)
 	g.GET("/3rd/product/:id", handler.GetProductById)
 	g.POST("/keluarga/asset/add", handler.AddAssetsKeluarga)
+	g.POST("/keluarga/asset/update", handler.UpdateAssetsKeluarga)
 
+}
+
+// UpdateAssetsKeluarga godoc
+// @tags Keluarga
+// @description 2.e Dapat mengedit data aset keluarga
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqUpdatessetKeluarga   true  "Ubah Asset Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/asset/update [post]
+func (k *KeluargaHandler) UpdateAssetsKeluarga(g *gin.Context) {
+	req := new(domain.ReqUpdatessetKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	productBaru, err := k.keluargaUC.GetProductById(ctx, strconv.Itoa(req.ProductBaru))
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetProductById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrProductNotFound)
+		return
+	}
+
+	dOrang, err := k.keluargaUC.GetKeluarga(ctx, &domain.ReqGetKeluarga{IdKeluarga: req.IdKeluarga})
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+	if dOrang[0].OrangTua != req.OrangTua {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.OrangTua " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+
+	if err := k.keluargaUC.UpdateAssetKeluarga(ctx, req, productBaru); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.UpdateAssetKeluarga " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	model.HandleSuccess(g, nil)
 }
 
 // AddAssetsKeluarga godoc
 // @tags Keluarga
-// @description Dapat menambah data aset keluarga
+// @description 2.d Dapat menambah data aset keluarga
 // @Accept  json
 // @Produce  json
 // @Param Keluarga body domain.ReqAddAssetKeluarga   true  "Tambah Asset Keluarga"

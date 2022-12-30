@@ -99,7 +99,7 @@ const docTemplate = `{
         },
         "/keluarga/asset/add": {
             "post": {
-                "description": "Menampilkan anggota keluarga 1 tingkat di bawah",
+                "description": "2.d Dapat menambah data aset keluarga",
                 "consumes": [
                     "application/json"
                 ],
@@ -117,6 +117,39 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/domain.ReqAddAssetKeluarga"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/keluarga/asset/update": {
+            "post": {
+                "description": "2.e Dapat mengedit data aset keluarga",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "Ubah Asset Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqUpdatessetKeluarga"
                         }
                     }
                 ],
@@ -344,6 +377,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReqUpdatessetKeluarga": {
+            "type": "object",
+            "properties": {
+                "id_keluarga": {
+                    "type": "integer"
+                },
+                "id_product": {
+                    "type": "integer"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                },
+                "product_baru": {
                     "type": "integer"
                 }
             }

@@ -15,6 +15,7 @@ type KeluargaRepository interface {
 	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
 	GetKeluarga(ctx context.Context, req *ReqGetKeluarga) (res []table.Orang, err error)
 	AddAssetKeluarga(ctx context.Context, req *table.Asset) (err error)
+	UpdateAssetKeluarga(ctx context.Context, req *table.Asset) (err error)
 }
 
 type KeluargaUsecase interface {
@@ -27,6 +28,13 @@ type KeluargaUsecase interface {
 	GetAllProduct(ctx context.Context) (res interface{}, err error)
 	GetProductById(ctx context.Context, req string) (res interface{}, err error)
 	AddAssetKeluarga(ctx context.Context, req *ReqAddAssetKeluarga, data interface{}) (err error)
+	UpdateAssetKeluarga(ctx context.Context, req *ReqUpdatessetKeluarga, data interface{}) (err error)
+}
+type ReqUpdatessetKeluarga struct {
+	OrangTua    int `json:"orang_tua" validate:"null-numeric"`
+	IdKeluarga  int `json:"id_keluarga" validate:"req-numeric"`
+	IdProduct   int `json:"id_product" validate:"req-numeric"`
+	ProductBaru int `json:"product_baru" validate:"req-numeric"`
 }
 type ReqAddAssetKeluarga struct {
 	OrangTua   int `json:"orang_tua" validate:"null-numeric"`
