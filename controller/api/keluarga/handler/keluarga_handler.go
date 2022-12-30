@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -32,6 +33,60 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.POST("/keluarga/get", handler.GetKeluarga)
 	g.GET("/3rd/product/all", handler.GetAllProduct)
 	g.GET("/3rd/product/:id", handler.GetProductById)
+	g.POST("/keluarga/asset/add", handler.AddAssetsKeluarga)
+
+}
+
+// AddAssetsKeluarga godoc
+// @tags Keluarga
+// @description Dapat menambah data aset keluarga
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqAddAssetKeluarga   true  "Tambah Asset Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/asset/add [post]
+func (k *KeluargaHandler) AddAssetsKeluarga(g *gin.Context) {
+	req := new(domain.ReqAddAssetKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	data, err := k.keluargaUC.GetProductById(ctx, strconv.Itoa(req.IdProduct))
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetProductById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrProductNotFound)
+		return
+	}
+
+	dOrang, err := k.keluargaUC.GetKeluarga(ctx, &domain.ReqGetKeluarga{IdKeluarga: req.IdKeluarga})
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+	if dOrang[0].OrangTua != req.OrangTua {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.OrangTua " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+
+	if err := k.keluargaUC.AddAssetKeluarga(ctx, req, data); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.AddAssetKeluarga " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	model.HandleSuccess(g, nil)
 }
 
 // GetProductById godoc
@@ -54,11 +109,10 @@ func (k *KeluargaHandler) GetProductById(g *gin.Context) {
 	}
 	data, err := k.keluargaUC.GetProductById(ctx, idStr)
 	if err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
-		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetProductById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrProductNotFound)
 		return
 	}
-
 	model.HandleSuccess(g, data)
 }
 
@@ -75,8 +129,8 @@ func (k *KeluargaHandler) GetAllProduct(g *gin.Context) {
 	}
 	data, err := k.keluargaUC.GetAllProduct(ctx)
 	if err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
-		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetAllProduct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrProductNotFound)
 		return
 	}
 
@@ -109,7 +163,7 @@ func (k *KeluargaHandler) GetKeluarga(g *gin.Context) {
 	}
 	data, err := k.keluargaUC.GetKeluarga(ctx, req)
 	if err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetKeluarga " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
 		return
 	}

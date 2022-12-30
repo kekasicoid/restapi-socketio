@@ -97,6 +97,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/keluarga/asset/add": {
+            "post": {
+                "description": "Menampilkan anggota keluarga 1 tingkat di bawah",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "Tambah Asset Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqAddAssetKeluarga"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/keluarga/delete": {
             "post": {
                 "description": "3.c Dapat menghapus data orang dalam keluarga",
@@ -231,6 +264,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.ReqAddAssetKeluarga": {
+            "type": "object",
+            "properties": {
+                "id_keluarga": {
+                    "type": "integer"
+                },
+                "id_product": {
+                    "type": "integer"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.ReqAddKeluarga": {
             "type": "object",
             "required": [

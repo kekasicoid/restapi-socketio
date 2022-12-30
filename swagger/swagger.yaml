@@ -1,4 +1,13 @@
 definitions:
+  domain.ReqAddAssetKeluarga:
+    properties:
+      id_keluarga:
+        type: integer
+      id_product:
+        type: integer
+      orang_tua:
+        type: integer
+    type: object
   domain.ReqAddKeluarga:
     properties:
       jenis_kelamin:
@@ -103,6 +112,27 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.ReqAddKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+  /keluarga/asset/add:
+    post:
+      consumes:
+      - application/json
+      description: Menampilkan anggota keluarga 1 tingkat di bawah
+      parameters:
+      - description: Tambah Asset Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqAddAssetKeluarga'
       produces:
       - application/json
       responses:

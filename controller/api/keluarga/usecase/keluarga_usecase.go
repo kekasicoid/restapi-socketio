@@ -27,6 +27,20 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 	}
 }
 
+// AddAssetKeluarga implements domain.KeluargaUsecase
+func (u *KeluargaUsecase) AddAssetKeluarga(ctx context.Context, req *domain.ReqAddAssetKeluarga, data interface{}) (err error) {
+	dAsset := new(table.Asset)
+	dAsset.OrangID = req.IdKeluarga
+	dAsset.IdProduct = req.IdProduct
+	dAsset.Tittle = data.(map[string]interface{})["title"].(string)
+	dAsset.Description = data.(map[string]interface{})["description"].(string)
+	dAsset.Price = int(data.(map[string]interface{})["price"].(float64))
+	dAsset.Brand = data.(map[string]interface{})["brand"].(string)
+	dAsset.Category = data.(map[string]interface{})["category"].(string)
+	dAsset.Thumbnail = data.(map[string]interface{})["thumbnail"].(string)
+	return u.keluargaRepo.AddAssetKeluarga(ctx, dAsset)
+}
+
 // GetProductById implements domain.KeluargaUsecase
 func (*KeluargaUsecase) GetProductById(ctx context.Context, req string) (res interface{}, err error) {
 	reqOption := httpclient.RequestOptions{

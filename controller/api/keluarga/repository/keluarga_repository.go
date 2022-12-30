@@ -22,6 +22,14 @@ func NewKeluargaRepository(Conn *gorm.DB) domain.KeluargaRepository {
 	}
 }
 
+// AddAssetKeluarga implements domain.KeluargaRepository
+func (r *KeluargaRepository) AddAssetKeluarga(ctx context.Context, req *table.Asset) (err error) {
+	if err := r.Conn.WithContext(ctx).Create(req).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetKeluarga implements domain.KeluargaRepository
 func (r *KeluargaRepository) GetKeluarga(ctx context.Context, req *domain.ReqGetKeluarga) (res []table.Orang, err error) {
 	dOrang := []table.Orang{}
@@ -54,7 +62,7 @@ func (r *KeluargaRepository) SwitchKeluarga(ctx context.Context, req *domain.Req
 func (r *KeluargaRepository) CheckOrangById(ctx context.Context, req int) (err error) {
 	dOrang := new(table.Orang)
 	dOrang.Id = req
-	affected := r.Conn.WithContext(ctx).Debug().First(&dOrang)
+	affected := r.Conn.WithContext(ctx).First(&dOrang)
 	if err := affected.Error; err != nil {
 		return err
 	}
