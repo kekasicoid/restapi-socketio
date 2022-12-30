@@ -27,6 +27,15 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 	}
 }
 
+// DeleteAssetKeluarga implements domain.KeluargaUsecase
+func (u *KeluargaUsecase) DeleteAssetKeluarga(ctx context.Context, req *domain.ReqDeletessetKeluarga) (err error) {
+	dAsset := new(table.Asset)
+	dAsset.OrangID = req.IdKeluarga
+	dAsset.Id = req.Id
+	dAsset.IdProduct = req.IdProduct
+	return u.keluargaRepo.DeleteAssetKeluarga(ctx, dAsset)
+}
+
 // UpdateAssetKeluarga implements domain.KeluargaUsecase
 func (u *KeluargaUsecase) UpdateAssetKeluarga(ctx context.Context, req *domain.ReqUpdatessetKeluarga, data interface{}) (err error) {
 	dAsset := new(table.Asset)

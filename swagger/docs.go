@@ -130,6 +130,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/keluarga/asset/delete": {
+            "post": {
+                "description": "2.f Dapat menghapus data aset keluarga",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "hapus Asset Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqDeletessetKeluarga"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/keluarga/asset/update": {
             "post": {
                 "description": "2.e Dapat mengedit data aset keluarga",
@@ -332,6 +365,23 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id_keluarga": {
+                    "type": "integer"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReqDeletessetKeluarga": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "id_keluarga": {
+                    "type": "integer"
+                },
+                "id_product": {
                     "type": "integer"
                 },
                 "orang_tua": {

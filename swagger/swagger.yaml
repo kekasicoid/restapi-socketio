@@ -26,6 +26,17 @@ definitions:
       orang_tua:
         type: integer
     type: object
+  domain.ReqDeletessetKeluarga:
+    properties:
+      id:
+        type: integer
+      id_keluarga:
+        type: integer
+      id_product:
+        type: integer
+      orang_tua:
+        type: integer
+    type: object
   domain.ReqGetKeluarga:
     properties:
       id_keluarga:
@@ -144,6 +155,27 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.ReqAddAssetKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+  /keluarga/asset/delete:
+    post:
+      consumes:
+      - application/json
+      description: 2.f Dapat menghapus data aset keluarga
+      parameters:
+      - description: hapus Asset Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqDeletessetKeluarga'
       produces:
       - application/json
       responses:

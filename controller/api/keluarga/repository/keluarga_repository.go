@@ -22,20 +22,28 @@ func NewKeluargaRepository(Conn *gorm.DB) domain.KeluargaRepository {
 	}
 }
 
+// DeleteAssetKeluarga implements domain.KeluargaRepository
+func (r *KeluargaRepository) DeleteAssetKeluarga(ctx context.Context, req *table.Asset) (err error) {
+	if err := r.Conn.WithContext(ctx).Debug().Where("orang_id = ? and id_product = ? ", req.OrangID, req.IdProduct).Delete(req).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // UpdateAssetKeluarga implements domain.KeluargaRepository
 func (r *KeluargaRepository) UpdateAssetKeluarga(ctx context.Context, req *table.Asset) (err error) {
 	// db Transaction
 	trx := r.Conn.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// menghapus product
 		rm := new(table.Asset)
-		if err := tx.WithContext(ctx).Debug().Where("orang_id = ? and id = ? ", req.OrangID, req.Id).Delete(&rm).Error; err != nil {
+		if err := tx.WithContext(ctx).Where("orang_id = ? and id = ? ", req.OrangID, req.Id).Delete(&rm).Error; err != nil {
 			kekasigohelper.LoggerWarning("keluarga_repository.UpdateAssetKeluarga.delete " + err.Error())
 			return err
 		}
 
 		// menambah product
 		req.Id = 0
-		if err := tx.WithContext(ctx).Debug().Create(req).Error; err != nil {
+		if err := tx.WithContext(ctx).Create(req).Error; err != nil {
 			kekasigohelper.LoggerWarning("keluarga_repository.UpdateAssetKeluarga.create " + err.Error())
 			return err
 		}

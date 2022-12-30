@@ -35,7 +35,53 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.GET("/3rd/product/:id", handler.GetProductById)
 	g.POST("/keluarga/asset/add", handler.AddAssetsKeluarga)
 	g.POST("/keluarga/asset/update", handler.UpdateAssetsKeluarga)
+	g.POST("/keluarga/asset/delete", handler.DeleteAssetsKeluarga)
 
+}
+
+// DeleteAssetsKeluarga godoc
+// @tags Keluarga
+// @description 2.f Dapat menghapus data aset keluarga
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqDeletessetKeluarga   true  "hapus Asset Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/asset/delete [post]
+func (k *KeluargaHandler) DeleteAssetsKeluarga(g *gin.Context) {
+	req := new(domain.ReqDeletessetKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	dOrang, err := k.keluargaUC.GetKeluarga(ctx, &domain.ReqGetKeluarga{IdKeluarga: req.IdKeluarga})
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+	if dOrang[0].OrangTua != req.OrangTua {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.OrangTua " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+
+	if err := k.keluargaUC.DeleteAssetKeluarga(ctx, req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.UpdateAssetKeluarga " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, err.Error())
+		return
+	}
+	model.HandleSuccess(g, nil)
 }
 
 // UpdateAssetsKeluarga godoc
