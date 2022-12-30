@@ -27,6 +27,7 @@ const docTemplate = `{
     "paths": {
         "/keluarga/add": {
             "post": {
+                "description": "2.a Dapat menambahkan data orang baru ke keluarga (baru)",
                 "consumes": [
                     "application/json"
                 ],
@@ -57,8 +58,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/keluarga/delete": {
+            "post": {
+                "description": "3.c Dapat menghapus data orang dalam keluarga",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "Hapus Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqDeleteKeluarga"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/keluarga/update": {
             "post": {
+                "description": "2.b Dapat mengedit data orang dalam keluarga",
                 "consumes": [
                     "application/json"
                 ],
@@ -102,6 +137,17 @@ const docTemplate = `{
                 },
                 "nama": {
                     "type": "string"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReqDeleteKeluarga": {
+            "type": "object",
+            "properties": {
+                "id_keluarga": {
+                    "type": "integer"
                 },
                 "orang_tua": {
                     "type": "integer"

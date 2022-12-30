@@ -22,6 +22,24 @@ func NewKeluargaRepository(Conn *gorm.DB) domain.KeluargaRepository {
 	}
 }
 
+// DeleteKeluarga implements domain.KeluargaRepository
+func (r *KeluargaRepository) DeleteKeluarga(ctx context.Context, req *domain.ReqDeleteKeluarga) (err error) {
+	q := r.Conn.WithContext(ctx).Model(table.Orang{}).Select("orang_tua").Where("id = ? ", req.IdKeluarga)
+	if req.OrangTua == 0 {
+		q.Where("orang_tua IS NULL")
+	} else {
+		q.Where("orang_tua = ?", req.OrangTua)
+	}
+	affected := q.Updates(map[string]interface{}{"orang_tua": nil})
+	if err := affected.Error; err != nil {
+		return err
+	}
+	if affected.RowsAffected > 0 {
+		return nil
+	}
+	return errors.New(model.ErrRecordNotFound)
+}
+
 // UpdateKeluarga implements domain.KeluargaRepository
 func (r *KeluargaRepository) UpdateKeluarga(ctx context.Context, req *domain.ReqUpdateKeluarga) (err error) {
 	dOrang := new(table.Orang)

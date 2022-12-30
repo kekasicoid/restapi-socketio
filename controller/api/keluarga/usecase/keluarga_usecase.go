@@ -19,6 +19,11 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 	}
 }
 
+// DeleteKeluarga implements domain.KeluargaUsecase
+func (u *KeluargaUsecase) DeleteKeluarga(ctx context.Context, req *domain.ReqDeleteKeluarga) (err error) {
+	return u.keluargaRepo.DeleteKeluarga(ctx, req)
+}
+
 // UpdateKeluarga implements domain.KeluargaUsecase
 func (u *KeluargaUsecase) UpdateKeluarga(ctx context.Context, req *domain.ReqUpdateKeluarga) (err error) {
 	return u.keluargaRepo.UpdateKeluarga(ctx, req)

@@ -10,6 +10,13 @@ definitions:
     required:
     - nama
     type: object
+  domain.ReqDeleteKeluarga:
+    properties:
+      id_keluarga:
+        type: integer
+      orang_tua:
+        type: integer
+    type: object
   domain.ReqUpdateKeluarga:
     properties:
       id_keluarga:
@@ -48,6 +55,7 @@ paths:
     post:
       consumes:
       - application/json
+      description: 2.a Dapat menambahkan data orang baru ke keluarga (baru)
       parameters:
       - description: Tambah Keluarga
         in: body
@@ -64,10 +72,32 @@ paths:
             $ref: '#/definitions/model.Response'
       tags:
       - Keluarga
+  /keluarga/delete:
+    post:
+      consumes:
+      - application/json
+      description: 3.c Dapat menghapus data orang dalam keluarga
+      parameters:
+      - description: Hapus Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqDeleteKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
   /keluarga/update:
     post:
       consumes:
       - application/json
+      description: 2.b Dapat mengedit data orang dalam keluarga
       parameters:
       - description: Ubah Keluarga
         in: body

@@ -27,10 +27,46 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 
 	g.POST("/keluarga/add", handler.AddKeluarga)
 	g.POST("/keluarga/update", handler.UpdateKeluarga)
+	g.POST("/keluarga/delete", handler.DeleteKeluarga)
+}
+
+// DeleteKeluarga godoc
+// @tags Keluarga
+// @description 3.c Dapat menghapus data orang dalam keluarga
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqDeleteKeluarga   true  "Hapus Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/delete [post]
+func (k *KeluargaHandler) DeleteKeluarga(g *gin.Context) {
+	req := new(domain.ReqDeleteKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	if err := k.keluargaUC.DeleteKeluarga(ctx, req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.AddKeluarga " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	model.HandleSuccess(g, nil)
 }
 
 // UpdateKeluarga godoc
 // @tags Keluarga
+// @description 2.b Dapat mengedit data orang dalam keluarga
 // @Accept  json
 // @Produce  json
 // @Param Keluarga body domain.ReqUpdateKeluarga  true  "Ubah Keluarga"
@@ -64,6 +100,7 @@ func (k *KeluargaHandler) UpdateKeluarga(g *gin.Context) {
 
 // AddKeluarga godoc
 // @tags Keluarga
+// @description 2.a Dapat menambahkan data orang baru ke keluarga (baru)
 // @Accept  json
 // @Produce  json
 // @Param Keluarga body domain.ReqAddKeluarga  true  "Tambah Keluarga"
