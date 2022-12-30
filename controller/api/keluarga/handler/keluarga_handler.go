@@ -28,6 +28,47 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.POST("/keluarga/add", handler.AddKeluarga)
 	g.POST("/keluarga/update", handler.UpdateKeluarga)
 	g.POST("/keluarga/delete", handler.DeleteKeluarga)
+	g.POST("/keluarga/switch", handler.SwitchKeluarga)
+}
+
+// SwitchKeluarga godoc
+// @tags Keluarga
+// @description 2.a Dapat menambahkan data orang baru ke keluarga (Pindah KK)
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqSwitchKeluarga   true  "Pindah Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/switch [post]
+func (k *KeluargaHandler) SwitchKeluarga(g *gin.Context) {
+	req := new(domain.ReqSwitchKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	if err := k.keluargaUC.CheckOrangById(ctx, req.OrangTuaBaru); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		return
+	}
+
+	if err := k.keluargaUC.SwitchKeluarga(ctx, req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.SwitchKeluarga " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		return
+	}
+
+	model.HandleSuccess(g, nil)
 }
 
 // DeleteKeluarga godoc
@@ -56,7 +97,7 @@ func (k *KeluargaHandler) DeleteKeluarga(g *gin.Context) {
 	}
 
 	if err := k.keluargaUC.DeleteKeluarga(ctx, req); err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.AddKeluarga " + err.Error())
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.DeleteKeluarga " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -90,7 +131,7 @@ func (k *KeluargaHandler) UpdateKeluarga(g *gin.Context) {
 	}
 
 	if err := k.keluargaUC.UpdateKeluarga(ctx, req); err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.AddKeluarga " + err.Error())
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.UpdateKeluarga " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, err.Error())
 		return
 	}

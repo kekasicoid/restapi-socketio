@@ -10,12 +10,22 @@ type KeluargaRepository interface {
 	AddKeluarga(ctx context.Context, req *ReqAddKeluarga) (err error)
 	UpdateKeluarga(ctx context.Context, req *ReqUpdateKeluarga) (err error)
 	DeleteKeluarga(ctx context.Context, req *ReqDeleteKeluarga) (err error)
+	CheckOrangById(ctx context.Context, req int) (err error)
+	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
 }
 
 type KeluargaUsecase interface {
 	AddKeluarga(ctx context.Context, req *ReqAddKeluarga) (err error)
 	UpdateKeluarga(ctx context.Context, req *ReqUpdateKeluarga) (err error)
 	DeleteKeluarga(ctx context.Context, req *ReqDeleteKeluarga) (err error)
+	CheckOrangById(ctx context.Context, req int) (err error)
+	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
+}
+
+type ReqSwitchKeluarga struct {
+	OrangTua     int `json:"orang_tua" validate:"null-numeric"`
+	OrangTuaBaru int `json:"orang_tua_baru" validate:"req-numeric"`
+	IdKeluarga   int `json:"id_keluarga" validate:"req-numeric"`
 }
 
 type ReqAddKeluarga struct {

@@ -6,4 +6,5 @@ const (
 	ErrFailedUpdateData = "Failed : update data"
 	ErrJSONFormat       = "Invalid JSON"
 	ErrRecordNotFound   = "Record Not Found"
+	ErrOrangTuaBaru     = "Orang tua baru tidak ditemukan"
 )

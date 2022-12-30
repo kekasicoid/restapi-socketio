@@ -91,6 +91,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/keluarga/switch": {
+            "post": {
+                "description": "2.a Dapat menambahkan data orang baru ke keluarga (Pindah KK)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "Pindah Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqSwitchKeluarga"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/keluarga/update": {
             "post": {
                 "description": "2.b Dapat mengedit data orang dalam keluarga",
@@ -150,6 +183,20 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReqSwitchKeluarga": {
+            "type": "object",
+            "properties": {
+                "id_keluarga": {
+                    "type": "integer"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                },
+                "orang_tua_baru": {
                     "type": "integer"
                 }
             }

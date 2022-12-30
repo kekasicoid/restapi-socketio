@@ -22,6 +22,38 @@ func NewKeluargaRepository(Conn *gorm.DB) domain.KeluargaRepository {
 	}
 }
 
+// SwitchKeluarga implements domain.KeluargaRepository
+func (r *KeluargaRepository) SwitchKeluarga(ctx context.Context, req *domain.ReqSwitchKeluarga) (err error) {
+	q := r.Conn.WithContext(ctx).Model(table.Orang{}).Select("orang_tua").Where("id = ? ", req.IdKeluarga)
+	if req.OrangTua == 0 {
+		q.Where("orang_tua IS NULL")
+	} else {
+		q.Where("orang_tua = ?", req.OrangTua)
+	}
+	affected := q.Updates(map[string]interface{}{"orang_tua": req.OrangTuaBaru})
+	if err := affected.Error; err != nil {
+		return err
+	}
+	if affected.RowsAffected > 0 {
+		return nil
+	}
+	return errors.New(model.ErrRecordNotFound)
+}
+
+// CheckOrangById implements domain.KeluargaRepository
+func (r *KeluargaRepository) CheckOrangById(ctx context.Context, req int) (err error) {
+	dOrang := new(table.Orang)
+	dOrang.Id = req
+	affected := r.Conn.WithContext(ctx).Debug().First(&dOrang)
+	if err := affected.Error; err != nil {
+		return err
+	}
+	if affected.RowsAffected > 0 {
+		return nil
+	}
+	return errors.New(model.ErrRecordNotFound)
+}
+
 // DeleteKeluarga implements domain.KeluargaRepository
 func (r *KeluargaRepository) DeleteKeluarga(ctx context.Context, req *domain.ReqDeleteKeluarga) (err error) {
 	q := r.Conn.WithContext(ctx).Model(table.Orang{}).Select("orang_tua").Where("id = ? ", req.IdKeluarga)

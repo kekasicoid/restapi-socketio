@@ -19,6 +19,16 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 	}
 }
 
+// SwitchKeluarga implements domain.KeluargaUsecase
+func (u *KeluargaUsecase) SwitchKeluarga(ctx context.Context, req *domain.ReqSwitchKeluarga) (err error) {
+	return u.keluargaRepo.SwitchKeluarga(ctx, req)
+}
+
+// SwitchKeluarga implements domain.KeluargaUsecase
+func (u *KeluargaUsecase) CheckOrangById(ctx context.Context, req int) (err error) {
+	return u.keluargaRepo.CheckOrangById(ctx, req)
+}
+
 // DeleteKeluarga implements domain.KeluargaUsecase
 func (u *KeluargaUsecase) DeleteKeluarga(ctx context.Context, req *domain.ReqDeleteKeluarga) (err error) {
 	return u.keluargaRepo.DeleteKeluarga(ctx, req)
