@@ -169,7 +169,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: 2.f Dapat menghapus data aset keluarga
+      description: 2.f Dapat menghapus data aset keluarga && 2.h Dapat mengurangi
+        asset yang dimiliki oleh suatu orang dalam keluarga
       parameters:
       - description: hapus Asset Keluarga
         in: body

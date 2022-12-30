@@ -132,7 +132,7 @@ const docTemplate = `{
         },
         "/keluarga/asset/delete": {
             "post": {
-                "description": "2.f Dapat menghapus data aset keluarga",
+                "description": "2.f Dapat menghapus data aset keluarga \u0026\u0026 2.h Dapat mengurangi asset yang dimiliki oleh suatu orang dalam keluarga",
                 "consumes": [
                     "application/json"
                 ],

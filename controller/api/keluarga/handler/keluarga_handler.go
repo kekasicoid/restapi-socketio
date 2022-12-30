@@ -41,7 +41,7 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 
 // DeleteAssetsKeluarga godoc
 // @tags Keluarga
-// @description 2.f Dapat menghapus data aset keluarga
+// @description 2.f Dapat menghapus data aset keluarga && 2.h Dapat mengurangi asset yang dimiliki oleh suatu orang dalam keluarga
 // @Accept  json
 // @Produce  json
 // @Param Keluarga body domain.ReqDeletessetKeluarga   true  "hapus Asset Keluarga"
