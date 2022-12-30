@@ -10,6 +10,19 @@ definitions:
     required:
     - nama
     type: object
+  domain.ReqUpdateKeluarga:
+    properties:
+      id_keluarga:
+        type: integer
+      jenis_kelamin:
+        type: integer
+      nama:
+        type: string
+      orang_tua:
+        type: integer
+    required:
+    - nama
+    type: object
   model.Response:
     properties:
       data: {}
@@ -42,6 +55,26 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.ReqAddKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+  /keluarga/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ubah Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqUpdateKeluarga'
       produces:
       - application/json
       responses:

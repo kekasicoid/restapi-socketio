@@ -51,6 +51,38 @@
                     }
                 }
             }
+        },
+        "/keluarga/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "Ubah Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqUpdateKeluarga"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -60,6 +92,26 @@
                 "nama"
             ],
             "properties": {
+                "jenis_kelamin": {
+                    "type": "integer"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReqUpdateKeluarga": {
+            "type": "object",
+            "required": [
+                "nama"
+            ],
+            "properties": {
+                "id_keluarga": {
+                    "type": "integer"
+                },
                 "jenis_kelamin": {
                     "type": "integer"
                 },

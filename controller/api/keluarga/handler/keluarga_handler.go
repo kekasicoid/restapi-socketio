@@ -26,6 +26,40 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	}
 
 	g.POST("/keluarga/add", handler.AddKeluarga)
+	g.POST("/keluarga/update", handler.UpdateKeluarga)
+}
+
+// UpdateKeluarga godoc
+// @tags Keluarga
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqUpdateKeluarga  true  "Ubah Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/update [post]
+func (k *KeluargaHandler) UpdateKeluarga(g *gin.Context) {
+	req := new(domain.ReqUpdateKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	if err := k.keluargaUC.UpdateKeluarga(ctx, req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.AddKeluarga " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	model.HandleSuccess(g, nil)
 }
 
 // AddKeluarga godoc

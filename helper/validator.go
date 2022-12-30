@@ -40,6 +40,5 @@ func NullOrNumeric(field validator.FieldLevel) bool {
 			return false
 		}
 	}
-	kekasigohelper.LoggerInfo("kekasi")
 	return true
 }
