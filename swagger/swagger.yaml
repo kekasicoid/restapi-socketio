@@ -17,6 +17,11 @@ definitions:
       orang_tua:
         type: integer
     type: object
+  domain.ReqGetKeluarga:
+    properties:
+      id_keluarga:
+        type: integer
+    type: object
   domain.ReqSwitchKeluarga:
     properties:
       id_keluarga:
@@ -93,6 +98,27 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.ReqDeleteKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+  /keluarga/get:
+    post:
+      consumes:
+      - application/json
+      description: Menampilkan anggota keluarga 1 tingkat di bawah
+      parameters:
+      - description: Pindah Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqGetKeluarga'
       produces:
       - application/json
       responses:

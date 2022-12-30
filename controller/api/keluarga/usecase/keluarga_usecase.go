@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/kekasicoid/restapi-socketio/domain"
+	"github.com/kekasicoid/restapi-socketio/table"
 )
 
 type KeluargaUsecase struct {
@@ -17,6 +18,11 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 		keluargaRepo:   keluargaRepo,
 		contextTimeout: timeout,
 	}
+}
+
+// GetKeluarga implements domain.KeluargaUsecase
+func (u *KeluargaUsecase) GetKeluarga(ctx context.Context, req *domain.ReqGetKeluarga) (res []table.Orang, err error) {
+	return u.keluargaRepo.GetKeluarga(ctx, req)
 }
 
 // SwitchKeluarga implements domain.KeluargaUsecase

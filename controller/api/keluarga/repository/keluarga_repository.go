@@ -22,6 +22,16 @@ func NewKeluargaRepository(Conn *gorm.DB) domain.KeluargaRepository {
 	}
 }
 
+// GetKeluarga implements domain.KeluargaRepository
+func (r *KeluargaRepository) GetKeluarga(ctx context.Context, req *domain.ReqGetKeluarga) (res []table.Orang, err error) {
+	dOrang := []table.Orang{}
+	r.Conn.WithContext(ctx).Where("id = ?", req.IdKeluarga).Preload("Anak").Find(&dOrang)
+	if len(dOrang) > 0 {
+		return dOrang, nil
+	}
+	return nil, errors.New(model.ErrRecordNotFound)
+}
+
 // SwitchKeluarga implements domain.KeluargaRepository
 func (r *KeluargaRepository) SwitchKeluarga(ctx context.Context, req *domain.ReqSwitchKeluarga) (err error) {
 	q := r.Conn.WithContext(ctx).Model(table.Orang{}).Select("orang_tua").Where("id = ? ", req.IdKeluarga)

@@ -29,6 +29,41 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.POST("/keluarga/update", handler.UpdateKeluarga)
 	g.POST("/keluarga/delete", handler.DeleteKeluarga)
 	g.POST("/keluarga/switch", handler.SwitchKeluarga)
+	g.POST("/keluarga/get", handler.GetKeluarga)
+}
+
+// GetKeluarga godoc
+// @tags Keluarga
+// @description Menampilkan anggota keluarga 1 tingkat di bawah
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqGetKeluarga   true  "Pindah Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/get [post]
+func (k *KeluargaHandler) GetKeluarga(g *gin.Context) {
+	req := new(domain.ReqGetKeluarga)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+	data, err := k.keluargaUC.GetKeluarga(ctx, req)
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		return
+	}
+
+	model.HandleSuccess(g, data)
 }
 
 // SwitchKeluarga godoc

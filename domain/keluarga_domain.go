@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kekasicoid/restapi-socketio/enum"
+	"github.com/kekasicoid/restapi-socketio/table"
 )
 
 type KeluargaRepository interface {
@@ -12,6 +13,7 @@ type KeluargaRepository interface {
 	DeleteKeluarga(ctx context.Context, req *ReqDeleteKeluarga) (err error)
 	CheckOrangById(ctx context.Context, req int) (err error)
 	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
+	GetKeluarga(ctx context.Context, req *ReqGetKeluarga) (res []table.Orang, err error)
 }
 
 type KeluargaUsecase interface {
@@ -20,6 +22,11 @@ type KeluargaUsecase interface {
 	DeleteKeluarga(ctx context.Context, req *ReqDeleteKeluarga) (err error)
 	CheckOrangById(ctx context.Context, req int) (err error)
 	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
+	GetKeluarga(ctx context.Context, req *ReqGetKeluarga) (res []table.Orang, err error)
+}
+
+type ReqGetKeluarga struct {
+	IdKeluarga int `json:"id_keluarga" validate:"req-numeric"`
 }
 
 type ReqSwitchKeluarga struct {
