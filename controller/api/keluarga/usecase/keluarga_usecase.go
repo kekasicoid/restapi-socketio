@@ -2,10 +2,17 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"net/http"
 	"time"
 
+	"github.com/kekasicoid/kekasigohelper"
+	"github.com/kekasicoid/kekasigohelper/httpclient"
 	"github.com/kekasicoid/restapi-socketio/domain"
+	"github.com/kekasicoid/restapi-socketio/model"
 	"github.com/kekasicoid/restapi-socketio/table"
+	"github.com/spf13/viper"
 )
 
 type KeluargaUsecase struct {
@@ -18,6 +25,32 @@ func NewKeluargaUsecase(keluargaRepo domain.KeluargaRepository, timeout time.Dur
 		keluargaRepo:   keluargaRepo,
 		contextTimeout: timeout,
 	}
+}
+
+// GetAllProduct implements domain.KeluargaUsecase
+func (*KeluargaUsecase) GetAllProduct(ctx context.Context) (res interface{}, err error) {
+	reqOption := httpclient.RequestOptions{
+		Payload:       nil,
+		URL:           viper.Get("VENDOR_PRODUCT_URL").(string),
+		TimeoutSecond: 60,
+		Method:        http.MethodGet,
+		Context:       ctx,
+		Header: map[string]string{
+			httpclient.ContentType: httpclient.MediaTypeJSON,
+		},
+	}
+
+	resp, err := httpclient.Request(reqOption)
+	if err != nil {
+		kekasigohelper.LoggerWarning(err.Error())
+		return nil, errors.New(model.GENERAL_MSG_COMM)
+	}
+	if resp.Status() != http.StatusOK {
+		kekasigohelper.LoggerWarning("http.Do() error: " + string(resp.RawByte()))
+		return nil, errors.New(resp.String())
+	}
+	_ = json.Unmarshal(resp.RawByte(), &res)
+	return res, nil
 }
 
 // GetKeluarga implements domain.KeluargaUsecase

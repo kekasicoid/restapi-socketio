@@ -23,6 +23,7 @@ type KeluargaUsecase interface {
 	CheckOrangById(ctx context.Context, req int) (err error)
 	SwitchKeluarga(ctx context.Context, req *ReqSwitchKeluarga) (err error)
 	GetKeluarga(ctx context.Context, req *ReqGetKeluarga) (res []table.Orang, err error)
+	GetAllProduct(ctx context.Context) (res interface{}, err error)
 }
 
 type ReqGetKeluarga struct {

@@ -25,6 +25,21 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/3rd/product/all": {
+            "get": {
+                "description": "https://dummyjson.com/docs/products#all",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "3rd Party"
+                ],
+                "responses": {}
+            }
+        },
         "/keluarga/add": {
             "post": {
                 "description": "2.a Dapat menambahkan data orang baru ke keluarga (baru)",

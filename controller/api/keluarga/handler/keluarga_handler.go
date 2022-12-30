@@ -30,6 +30,28 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.POST("/keluarga/delete", handler.DeleteKeluarga)
 	g.POST("/keluarga/switch", handler.SwitchKeluarga)
 	g.POST("/keluarga/get", handler.GetKeluarga)
+	g.GET("/3rd/product/all", handler.GetAllProduct)
+}
+
+// GetKeluarga godoc
+// @tags 3rd Party
+// @description https://dummyjson.com/docs/products#all
+// @Accept  json
+// @Produce  json
+// @Router /3rd/product/all [get]
+func (k *KeluargaHandler) GetAllProduct(g *gin.Context) {
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	data, err := k.keluargaUC.GetAllProduct(ctx)
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrOrangTuaBaru)
+		return
+	}
+
+	model.HandleSuccess(g, data)
 }
 
 // GetKeluarga godoc

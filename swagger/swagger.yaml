@@ -65,6 +65,16 @@ info:
   title: RestAPI & Socket.io v2
   version: "1.0"
 paths:
+  /3rd/product/all:
+    get:
+      consumes:
+      - application/json
+      description: https://dummyjson.com/docs/products#all
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - 3rd Party
   /keluarga/add:
     post:
       consumes:
