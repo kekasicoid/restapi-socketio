@@ -138,7 +138,7 @@ func (k *KeluargaHandler) UpdateAssetsKeluarga(g *gin.Context) {
 
 // AddAssetsKeluarga godoc
 // @tags Keluarga
-// @description 2.d Dapat menambah data aset keluarga
+// @description 2.d Dapat menambah data aset keluarga && 2.g Dapat menambahkan aset yang dimiliki oleh suatu orang dalam keluarga
 // @Accept  json
 // @Produce  json
 // @Param Keluarga body domain.ReqAddAssetKeluarga   true  "Tambah Asset Keluarga"

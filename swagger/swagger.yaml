@@ -147,7 +147,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: 2.d Dapat menambah data aset keluarga
+      description: 2.d Dapat menambah data aset keluarga && 2.g Dapat menambahkan
+        aset yang dimiliki oleh suatu orang dalam keluarga
       parameters:
       - description: Tambah Asset Keluarga
         in: body

@@ -99,7 +99,7 @@ const docTemplate = `{
         },
         "/keluarga/asset/add": {
             "post": {
-                "description": "2.d Dapat menambah data aset keluarga",
+                "description": "2.d Dapat menambah data aset keluarga \u0026\u0026 2.g Dapat menambahkan aset yang dimiliki oleh suatu orang dalam keluarga",
                 "consumes": [
                     "application/json"
                 ],
