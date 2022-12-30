@@ -1,0 +1,39 @@
+definitions:
+  model.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact:
+    email: arditya@kekasi.co.id
+    name: Arditya Kekasi
+    url: http://www.kekasi.co.id
+  description: Pattern Go RestAPI + Socket.io v2. with the same ports.
+  license:
+    name: YouTube KekasiGen
+    url: https://kekasi.link/kekasigensub
+  termsOfService: https://id.linkedin.com/public-profile/in/arditya-kekasi
+  title: RestAPI & Socket.io v2
+  version: "1.0"
+paths:
+  /keluarga/add:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+schemes:
+- http
+- https
+swagger: "2.0"
