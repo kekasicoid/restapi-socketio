@@ -1,4 +1,15 @@
 definitions:
+  domain.ReqAddKeluarga:
+    properties:
+      jenis_kelamin:
+        type: integer
+      nama:
+        type: string
+      orang_tua:
+        type: integer
+    required:
+    - nama
+    type: object
   model.Response:
     properties:
       data: {}
@@ -24,6 +35,13 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: Tambah Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqAddKeluarga'
       produces:
       - application/json
       responses:

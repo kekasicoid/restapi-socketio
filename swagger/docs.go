@@ -36,6 +36,17 @@ const docTemplate = `{
                 "tags": [
                     "Keluarga"
                 ],
+                "parameters": [
+                    {
+                        "description": "Tambah Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqAddKeluarga"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -48,6 +59,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.ReqAddKeluarga": {
+            "type": "object",
+            "required": [
+                "nama"
+            ],
+            "properties": {
+                "jenis_kelamin": {
+                    "type": "integer"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "orang_tua": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.Response": {
             "type": "object",
             "properties": {

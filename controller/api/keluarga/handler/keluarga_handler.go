@@ -32,6 +32,7 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 // @tags Keluarga
 // @Accept  json
 // @Produce  json
+// @Param Keluarga body domain.ReqAddKeluarga  true  "Tambah Keluarga"
 // @Success 200 {object} model.Response
 // @Router /keluarga/add [post]
 func (k *KeluargaHandler) AddKeluarga(g *gin.Context) {
