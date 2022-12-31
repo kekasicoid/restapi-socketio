@@ -58,4 +58,7 @@ Tab Event (Create)
 - choose event "join" and klik "send"
 
 ## ATTENTION
-The table will be automatically created. when running the app. Make sure the database has been created and can be connected.
+The table will be automatically created. when running the app. Make sure the database has been created and can be connected. 
+
+## SQL File
+restapi_socketio.sql
