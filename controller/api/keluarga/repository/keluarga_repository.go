@@ -22,9 +22,20 @@ func NewKeluargaRepository(Conn *gorm.DB) domain.KeluargaRepository {
 	}
 }
 
+// GetKeluargaAssets implements domain.KeluargaRepository
+func (r *KeluargaRepository) GetKeluargaAssets(ctx context.Context, req *domain.ReqGetKeluargaAssets) (res []table.Asset, err error) {
+	var dAssets = []table.Asset{}
+
+	r.Conn.WithContext(ctx).Model(table.Asset{}).Where("orang_id = ?", req.IdKeluarga).Preload("Orang").Find(&dAssets)
+	if len(dAssets) > 0 {
+		return dAssets, nil
+	}
+	return nil, errors.New(model.ErrRecordNotFound)
+}
+
 // DeleteAssetKeluarga implements domain.KeluargaRepository
 func (r *KeluargaRepository) DeleteAssetKeluarga(ctx context.Context, req *table.Asset) (err error) {
-	if err := r.Conn.WithContext(ctx).Debug().Where("orang_id = ? and id_product = ? ", req.OrangID, req.IdProduct).Delete(req).Error; err != nil {
+	if err := r.Conn.WithContext(ctx).Where("orang_id = ? and id_product = ? ", req.OrangID, req.IdProduct).Delete(req).Error; err != nil {
 		return err
 	}
 	return nil

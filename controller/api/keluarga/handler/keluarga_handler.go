@@ -36,7 +36,47 @@ func NewKeluargaHandler(g *gin.Engine, uc domain.KeluargaUsecase, pg *validator.
 	g.POST("/keluarga/asset/add", handler.AddAssetsKeluarga)
 	g.POST("/keluarga/asset/update", handler.UpdateAssetsKeluarga)
 	g.POST("/keluarga/asset/delete", handler.DeleteAssetsKeluarga)
+	g.POST("/keluarga/asset/riches", handler.RichesAssetsKeluarga)
+}
 
+// RichesAssetsKeluarga godoc
+// @tags Keluarga
+// @description Dapat menampilkan total nilai (price) aset yang dimiliki oleh masing-masing orang dalam suatu keluarga berdasarkan data harga product di api produk berikut https://dummyjson.com/docs/products
+// @Accept  json
+// @Produce  json
+// @Param Keluarga body domain.ReqGetKeluargaAssets    true  "Total Asset Keluarga"
+// @Success 200 {object} model.Response
+// @Router /keluarga/asset/riches [post]
+func (k *KeluargaHandler) RichesAssetsKeluarga(g *gin.Context) {
+	req := new(domain.ReqGetKeluargaAssets)
+	ctx := g.Request.Context()
+	if ctx != nil {
+		ctx = context.Background()
+	}
+	if err := g.BindJSON(&req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.BindJSON " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrJSONFormat)
+		return
+	}
+	if err := k.validate.Struct(req); err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.validate.struct " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrInvalidParameter)
+		return
+	}
+
+	dOrang, err := k.keluargaUC.GetKeluargaAsset(ctx, req)
+	if err != nil {
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetKeluargaAsset " + err.Error())
+		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+		return
+	}
+	// if dOrang[0].Orang.OrangTua != req.OrangTua {
+	// 	kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.OrangTua " + err.Error())
+	// 	model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
+	// 	return
+	// }
+
+	model.HandleSuccess(g, dOrang)
 }
 
 // DeleteAssetsKeluarga godoc
@@ -66,11 +106,11 @@ func (k *KeluargaHandler) DeleteAssetsKeluarga(g *gin.Context) {
 
 	dOrang, err := k.keluargaUC.GetKeluarga(ctx, &domain.ReqGetKeluarga{IdKeluarga: req.IdKeluarga})
 	if err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetKeluarga " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
 		return
 	}
-	if dOrang[0].OrangTua != req.OrangTua {
+	if (len(dOrang) < 1) || (dOrang[0].OrangTua != req.OrangTua) {
 		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.OrangTua " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
 		return
@@ -118,7 +158,7 @@ func (k *KeluargaHandler) UpdateAssetsKeluarga(g *gin.Context) {
 
 	dOrang, err := k.keluargaUC.GetKeluarga(ctx, &domain.ReqGetKeluarga{IdKeluarga: req.IdKeluarga})
 	if err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetKeluarga " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
 		return
 	}
@@ -170,7 +210,7 @@ func (k *KeluargaHandler) AddAssetsKeluarga(g *gin.Context) {
 
 	dOrang, err := k.keluargaUC.GetKeluarga(ctx, &domain.ReqGetKeluarga{IdKeluarga: req.IdKeluarga})
 	if err != nil {
-		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.CheckOrangById " + err.Error())
+		kekasigohelper.LoggerWarning("keluarga_handler.keluargaUC.GetKeluarga " + err.Error())
 		model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
 		return
 	}

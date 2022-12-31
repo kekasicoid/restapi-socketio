@@ -42,6 +42,13 @@ definitions:
       id_keluarga:
         type: integer
     type: object
+  domain.ReqGetKeluargaAssets:
+    properties:
+      id_keluarga:
+        type: integer
+      orang_tua:
+        type: integer
+    type: object
   domain.ReqSwitchKeluarga:
     properties:
       id_keluarga:
@@ -178,6 +185,29 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/domain.ReqDeletessetKeluarga'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+      tags:
+      - Keluarga
+  /keluarga/asset/riches:
+    post:
+      consumes:
+      - application/json
+      description: Dapat menampilkan total nilai (price) aset yang dimiliki oleh masing-masing
+        orang dalam suatu keluarga berdasarkan data harga product di api produk berikut
+        https://dummyjson.com/docs/products
+      parameters:
+      - description: Total Asset Keluarga
+        in: body
+        name: Keluarga
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ReqGetKeluargaAssets'
       produces:
       - application/json
       responses:

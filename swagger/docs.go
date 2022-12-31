@@ -163,6 +163,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/keluarga/asset/riches": {
+            "post": {
+                "description": "Dapat menampilkan total nilai (price) aset yang dimiliki oleh masing-masing orang dalam suatu keluarga berdasarkan data harga product di api produk berikut https://dummyjson.com/docs/products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Keluarga"
+                ],
+                "parameters": [
+                    {
+                        "description": "Total Asset Keluarga",
+                        "name": "Keluarga",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ReqGetKeluargaAssets"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/keluarga/asset/update": {
             "post": {
                 "description": "2.e Dapat mengedit data aset keluarga",
@@ -393,6 +426,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id_keluarga": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReqGetKeluargaAssets": {
+            "type": "object",
+            "properties": {
+                "id_keluarga": {
+                    "type": "integer"
+                },
+                "orang_tua": {
                     "type": "integer"
                 }
             }

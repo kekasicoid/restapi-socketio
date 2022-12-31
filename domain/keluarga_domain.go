@@ -17,6 +17,7 @@ type KeluargaRepository interface {
 	AddAssetKeluarga(ctx context.Context, req *table.Asset) (err error)
 	UpdateAssetKeluarga(ctx context.Context, req *table.Asset) (err error)
 	DeleteAssetKeluarga(ctx context.Context, req *table.Asset) (err error)
+	GetKeluargaAssets(ctx context.Context, req *ReqGetKeluargaAssets) (res []table.Asset, err error)
 }
 
 type KeluargaUsecase interface {
@@ -31,6 +32,11 @@ type KeluargaUsecase interface {
 	AddAssetKeluarga(ctx context.Context, req *ReqAddAssetKeluarga, data interface{}) (err error)
 	UpdateAssetKeluarga(ctx context.Context, req *ReqUpdatessetKeluarga, data interface{}) (err error)
 	DeleteAssetKeluarga(ctx context.Context, req *ReqDeletessetKeluarga) (err error)
+	GetKeluargaAsset(ctx context.Context, req *ReqGetKeluargaAssets) (res []ResRichesKeluarga, err error)
+}
+type ReqGetKeluargaAssets struct {
+	OrangTua   int `json:"orang_tua" validate:"null-numeric"`
+	IdKeluarga int `json:"id_keluarga" validate:"req-numeric"`
 }
 type ReqDeletessetKeluarga struct {
 	OrangTua   int `json:"orang_tua" validate:"null-numeric"`
@@ -75,4 +81,16 @@ type ReqUpdateKeluarga struct {
 type ReqDeleteKeluarga struct {
 	OrangTua   int `json:"orang_tua" validate:"null-numeric"`
 	IdKeluarga int `json:"id_keluarga" validate:"req-numeric"`
+}
+
+type ResRichesKeluarga struct {
+	Id           int               `json:"id"`
+	Nama         string            `json:"nama"`
+	JenisKelamin enum.JenisKelamin `json:"jenis_kelamin"`
+	OrangTua     int               `json:"orang_tua"`
+	Anak         []interface{}     `json:"anak"`
+	AssetsLocal  []table.Asset
+	AssetsOnline []interface{}
+	TPLocal      int `json:"total_price_local"`
+	TPOnline     int `json:"total_price_online"`
 }

@@ -5,7 +5,7 @@ package table
 type Asset struct {
 	Id          int `json:"id" gorm:"primarykey"`
 	OrangID     int
-	Orang       Orang  `gorm:"constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT;"`
+	Orang       *Orang `gorm:"foreignkey:OrangID;"`
 	IdProduct   int    `json:"id_product" gorm:"column:id_product"`
 	Tittle      string `json:"tittle" gorm:"column:tittle;size:255"`
 	Description string `json:"description" gorm:"column:description;size:255"`
