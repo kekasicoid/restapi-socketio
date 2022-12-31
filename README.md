@@ -54,8 +54,5 @@ Tab Event (Create)
 
 - Testing Connection
 request type : JSON
-{  
-    "id_keluarga": 13,
-    "orang_tua":null
-}
+{   "id_keluarga": 13, "orang_tua":null }
 choose event "join" and klik "send"
