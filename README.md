@@ -39,7 +39,7 @@ swag init -g app/main.go --output swagger/
 ## URL SWAGGER
 http://localhost:8989/swagger/index.html
 
-## POSTMAN COLLECTION
+## POSTMAN COLLECTION RESTAPI
 https://documenter.getpostman.com/view/2450580/2s8Z6zyWhb
 
 ## Socket Client (Postman)
@@ -52,7 +52,7 @@ Tab Event (Create)
 - Event Name : keluarga, Listen on connect : enable
 
 
-- Testing Connection
-request type : JSON
-{   "id_keluarga": 13, "orang_tua":null }
-choose event "join" and klik "send"
+## Testing Connection Socket (Postman)
+- request type : JSON
+- message : {   "id_keluarga": 13, "orang_tua":null }
+- choose event "join" and klik "send"
