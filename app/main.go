@@ -7,6 +7,7 @@ import (
 	_keluargaHandler "github.com/kekasicoid/restapi-socketio/controller/api/keluarga/handler"
 	_keluargaRepo "github.com/kekasicoid/restapi-socketio/controller/api/keluarga/repository"
 	_keluargaUC "github.com/kekasicoid/restapi-socketio/controller/api/keluarga/usecase"
+	_keluargaSioHandler "github.com/kekasicoid/restapi-socketio/controller/socketio/keluarga/handler"
 	"github.com/kekasicoid/restapi-socketio/helper"
 	docs "github.com/kekasicoid/restapi-socketio/swagger"
 
@@ -67,7 +68,7 @@ func main() {
 	if err != nil {
 		kekasigohelper.LoggerFatal("Error server.Adapter :" + err.Error())
 	}
-	//middL := helper.InitMiddleware()
+	middL := helper.InitMiddleware()
 	r.Use(gin.Recovery())
 
 	origin := strings.Split(viper.Get("ALLOW_ORIGIN").(string), ",")
@@ -104,6 +105,7 @@ func main() {
 
 	// ini Handler
 	_keluargaHandler.NewKeluargaHandler(r, keluargaUC, validate, server)
+	_keluargaSioHandler.NewKeluargaSioHandler(r, keluargaUC, nil, validate, server, middL)
 
 	err = r.Run(":" + port)
 	if err != nil {

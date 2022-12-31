@@ -11,6 +11,7 @@ import (
 	"github.com/kekasicoid/kekasigohelper"
 	"github.com/kekasicoid/restapi-socketio/domain"
 	"github.com/kekasicoid/restapi-socketio/model"
+	"github.com/spf13/viper"
 )
 
 type KeluargaHandler struct {
@@ -75,7 +76,11 @@ func (k *KeluargaHandler) RichesAssetsKeluarga(g *gin.Context) {
 	// 	model.HandleError(g, http.StatusBadRequest, model.ErrRecordNotFound)
 	// 	return
 	// }
-
+	room := dOrang[0].Id
+	if dOrang[0].OrangTua != 0 {
+		room = dOrang[0].OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_ASSETS)
 	model.HandleSuccess(g, dOrang)
 }
 
@@ -121,6 +126,11 @@ func (k *KeluargaHandler) DeleteAssetsKeluarga(g *gin.Context) {
 		model.HandleError(g, http.StatusBadRequest, err.Error())
 		return
 	}
+	room := dOrang[0].Id
+	if dOrang[0].OrangTua != 0 {
+		room = dOrang[0].OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_ASSETS)
 	model.HandleSuccess(g, nil)
 }
 
@@ -173,6 +183,11 @@ func (k *KeluargaHandler) UpdateAssetsKeluarga(g *gin.Context) {
 		model.HandleError(g, http.StatusBadRequest, err.Error())
 		return
 	}
+	room := dOrang[0].Id
+	if dOrang[0].OrangTua != 0 {
+		room = dOrang[0].OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_ASSETS)
 	model.HandleSuccess(g, nil)
 }
 
@@ -225,6 +240,12 @@ func (k *KeluargaHandler) AddAssetsKeluarga(g *gin.Context) {
 		model.HandleError(g, http.StatusBadRequest, err.Error())
 		return
 	}
+	room := dOrang[0].Id
+	if dOrang[0].OrangTua != 0 {
+		room = dOrang[0].OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_ASSETS)
+
 	model.HandleSuccess(g, nil)
 }
 
@@ -347,6 +368,13 @@ func (k *KeluargaHandler) SwitchKeluarga(g *gin.Context) {
 		return
 	}
 
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(req.OrangTuaBaru), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_KELUARGA)
+
+	room := req.IdKeluarga
+	if req.OrangTua != 0 {
+		room = req.OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_KELUARGA)
 	model.HandleSuccess(g, nil)
 }
 
@@ -381,6 +409,11 @@ func (k *KeluargaHandler) DeleteKeluarga(g *gin.Context) {
 		return
 	}
 
+	room := req.IdKeluarga
+	if req.OrangTua != 0 {
+		room = req.OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_KELUARGA)
 	model.HandleSuccess(g, nil)
 }
 
@@ -414,7 +447,11 @@ func (k *KeluargaHandler) UpdateKeluarga(g *gin.Context) {
 		model.HandleError(g, http.StatusBadRequest, err.Error())
 		return
 	}
-
+	room := req.IdKeluarga
+	if req.OrangTua != 0 {
+		room = req.OrangTua
+	}
+	model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(room), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_KELUARGA)
 	model.HandleSuccess(g, nil)
 }
 
@@ -449,5 +486,8 @@ func (k *KeluargaHandler) AddKeluarga(g *gin.Context) {
 		return
 	}
 
+	if req.OrangTua != 0 {
+		model.SocketHandleNotifikasi(k.socket, viper.Get("SOCK_NS_NOTIFIKASI").(string), strconv.Itoa(req.OrangTua), viper.Get("SOCK_EVENT_NOTIFIKASI").(string), model.UPDATE_DATA_KELUARGA)
+	}
 	model.HandleSuccess(g, nil)
 }

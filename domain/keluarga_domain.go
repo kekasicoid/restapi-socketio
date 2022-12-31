@@ -34,6 +34,9 @@ type KeluargaUsecase interface {
 	DeleteAssetKeluarga(ctx context.Context, req *ReqDeletessetKeluarga) (err error)
 	GetKeluargaAsset(ctx context.Context, req *ReqGetKeluargaAssets) (res []ResRichesKeluarga, err error)
 }
+
+type KeluargaSioUsecase interface{}
+
 type ReqGetKeluargaAssets struct {
 	OrangTua   int `json:"orang_tua" validate:"null-numeric"`
 	IdKeluarga int `json:"id_keluarga" validate:"req-numeric"`
@@ -57,6 +60,7 @@ type ReqAddAssetKeluarga struct {
 }
 type ReqGetKeluarga struct {
 	IdKeluarga int `json:"id_keluarga" validate:"req-numeric"`
+	OrangTua   int `json:"orang_tua,omitempty" validate:"null-numeric"`
 }
 
 type ReqSwitchKeluarga struct {
