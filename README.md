@@ -1,7 +1,7 @@
 ## INSTALL REDIS
 docker run --name redis-700 -p 6379:6379 -d redis:7.0.0
 
-## CREATE DATABASE 
+## CREATE DATABASE ( )
 restapi-socketio
 
 ## Configura .ENV
@@ -56,3 +56,6 @@ Tab Event (Create)
 - request type : JSON
 - message : {   "id_keluarga": 13, "orang_tua":null }
 - choose event "join" and klik "send"
+
+## ATTENTION
+The table will be automatically created. when running the app. Make sure the database has been created and can be connected.
