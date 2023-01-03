@@ -2,9 +2,18 @@ package helper
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kekasicoid/kekasigohelper"
 	"github.com/spf13/viper"
+	"go.uber.org/ratelimit"
+	"golang.org/x/time/rate"
+)
+
+var (
+	limit   ratelimit.Limiter
+	limiter = rate.NewLimiter(1, 3)
 )
 
 // GoMiddleware represent the data-struct for middleware
@@ -14,7 +23,27 @@ type GoMiddleware struct {
 
 // InitMiddleware initialize the middleware
 func InitMiddleware() *GoMiddleware {
+	limit = ratelimit.New(1) // 1 request per second
 	return &GoMiddleware{}
+}
+
+func (m *GoMiddleware) LimitRequest() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if limiter.Allow() == false {
+			c.AbortWithStatusJSON(429, http.StatusTooManyRequests)
+			return
+		}
+		return
+	}
+}
+
+func (m *GoMiddleware) LeakBucketUber() gin.HandlerFunc {
+	prev := time.Now()
+	return func(c *gin.Context) {
+		now := limit.Take()
+		kekasigohelper.LoggerInfo(now.Sub(prev))
+		prev = now
+	}
 }
 
 func (m *GoMiddleware) GinMiddlewareSocketIo(allowOrigin string) gin.HandlerFunc {

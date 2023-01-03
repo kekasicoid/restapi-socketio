@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	_keluargaSioHandler "github.com/kekasicoid/restapi-socketio/controller/socketio/keluarga/handler"
 	"github.com/kekasicoid/restapi-socketio/helper"
 	docs "github.com/kekasicoid/restapi-socketio/swagger"
+	"go.uber.org/ratelimit"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -26,7 +28,6 @@ func init() {
 	if err != nil {
 		kekasigohelper.LoggerFatal(err)
 	}
-
 }
 
 // @title RestAPI & Socket.io v2
@@ -41,6 +42,21 @@ func init() {
 // @license.name YouTube KekasiGen
 // @license.url https://kekasi.link/kekasigensub
 // @schemes http https
+var (
+	limit ratelimit.Limiter
+	count = 0
+	//rps   = flag.Int("rps", 100, "request per second")
+)
+
+func leakBucket() gin.HandlerFunc {
+	count++
+	prev := time.Now()
+	return func(c *gin.Context) {
+		now := limit.Take()
+		kekasigohelper.LoggerWarning(now.Sub(prev))
+		prev = now
+	}
+}
 
 func main() {
 	docs.SwaggerInfo.BasePath = ""
@@ -70,6 +86,7 @@ func main() {
 	}
 	middL := helper.InitMiddleware()
 	r.Use(gin.Recovery())
+	//r.Use(leakBucket())
 
 	origin := strings.Split(viper.Get("ALLOW_ORIGIN").(string), ",")
 	r.Use(cors.New(cors.Config{
@@ -84,10 +101,21 @@ func main() {
 	if appmode == "development" {
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
-	r.GET("/ping", func(c *gin.Context) {
+	kks := 0
+	r.GET("/ping", middL.LeakBucketUber(), func(c *gin.Context) {
+		kks++
 		c.JSON(200, gin.H{
-			"message": "Hello World",
+			"message": "Hello World Ping" + strconv.Itoa(kks),
 		})
+		return
+	})
+	kks2 := 0
+	r.GET("/pong", middL.LimitRequest(), func(c *gin.Context) {
+		kks2++
+		c.JSON(200, gin.H{
+			"message": "Hello World Pong" + strconv.Itoa(kks2),
+		})
+		return
 	})
 
 	go func() {
