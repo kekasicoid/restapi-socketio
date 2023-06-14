@@ -15,7 +15,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o main app/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o kekasigen app/main.go
 
 # Start fresh from a smaller image
 FROM alpine:3.9 
@@ -26,6 +26,7 @@ ENV TZ=Asia/Jakarta
 
 WORKDIR /root
 
-COPY --from=builder /go/src/github.com/kekasicoid/restapi-socketio/main .
+COPY --from=builder /go/src/github.com/kekasicoid/restapi-socketio/kekasigen .
 COPY --from=builder /go/src/github.com/kekasicoid/restapi-socketio/.env .env
 
+CMD [ "./kekasigen" ]
