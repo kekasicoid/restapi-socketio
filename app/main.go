@@ -76,6 +76,7 @@ func main() {
 
 	_, err := server.Adapter(&socketio.RedisAdapterOptions{
 		Host:     redisAddress,
+		Addr:     redisAddress + ":" + redisPort,
 		Port:     redisPort,
 		Prefix:   "kekasigen",
 		Password: redisPassword,
