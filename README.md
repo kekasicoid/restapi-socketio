@@ -1,40 +1,54 @@
 ## Added Docker Network
 ```
-$ docker network create --driver bridge kekasi-network
+docker network create --driver bridge kekasi-network
 ```
 
 ## INSTALL REDIS
 ```
-$ docker run -d --name redis-700 -p 6379:6379 redis:7.0.0 
+docker run -d --name redis-700 -p 6379:6379 redis:7.0.0 
+```
 
-$ docker network connect kekasi-network redis-700
+```
+docker network connect kekasi-network redis-700
 ```
 
 
 ## INSTALL MariaDB
 ```
-$ docker run  -d --name mariadb-10-4-30 -p 3306:3306 --env MARIADB_USER=kekasigen --env MARIADB_PASSWORD=ArdityaKekasi --env MARIADB_ROOT_PASSWORD=Kekasi.Co.ID mariadb:10.4.30 
+docker run  -d --name mariadb-10-4-30 -p 3306:3306 --env MARIADB_USER=kekasigen --env MARIADB_PASSWORD=ArdityaKekasi --env MARIADB_ROOT_PASSWORD=Kekasi.Co.ID mariadb:10.4.30 
 ```
+
 ```
-$ docker network connect kekasi-network mariadb-10-4-30
+docker network connect kekasi-network mariadb-10-4-30
 ```
+
 ```
-$ docker exec -it mariadb-10-4-30 bash
-$ mysql -u root -pKekasi.Co.ID
-$ CREATE DATABASE restapi_socketio;
+docker exec -it mariadb-10-4-30 bash
 ```
+
+```
+mysql -u root -pKekasi.Co.ID
+```
+
+```
+CREATE DATABASE restapi_socketio;
+```
+
 ## Build GO & Run
 ```
-$ docker build . -t restapi-socketio:0.3 --no-cache
+docker build . -t restapi-socketio:0.3 --no-cache
 ```
+
 ```
-$ docker run -dit -p 8989:8989 --name restapi-socketio restapi-socketio:0.3
+docker run -dit -p 8989:8989 --name restapi-socketio restapi-socketio:0.3
 ```
+
 ```
-$ docker network connect kekasi-network restapi-socketio
+docker network connect kekasi-network restapi-socketio
 ```
+
 ```
-$ docker restart restapi-socketio
+docker restart restapi-socketio
 ```
 
 ## Configure .env
@@ -66,12 +80,12 @@ SOCK_EVENT_NOTIFIKASI=keluarga
 
 ## RUN Go
 ```
-$ go run .\app\main.go
+go run .\app\main.go
 ```
 
 ## GENERATE SWAGGER
 ```
-$ swag init -g app/main.go --output swagger/
+swag init -g app/main.go --output swagger/
 ```
 
 
