@@ -1,0 +1,113 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: "mongo:5.0"
+    volumes:
+      - "mongodb_data:/data/db"
+    restart: "on-failure"
+
+  opensearch:
+    image: "opensearchproject/opensearch:2.4.0"
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "bootstrap.memory_lock=true"
+      - "discovery.type=single-node"
+      - "action.auto_create_index=false"
+      - "plugins.security.ssl.http.enabled=false"
+      - "plugins.security.disabled=true"
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - "os_data:/usr/share/opensearch/data"
+    restart: "on-failure"
+
+  graylog-513:
+    hostname: "server"
+    image: "${GRAYLOG_IMAGE:-graylog/graylog:5.1.3}"
+    depends_on:
+      opensearch:
+        condition: "service_started"
+      mongodb:
+        condition: "service_started"
+    entrypoint: "/usr/bin/tini -- wait-for-it opensearch:9200 --  /docker-entrypoint.sh"
+    environment:
+      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
+      GRAYLOG_PASSWORD_SECRET: "HZkU75ETiYOEn7XzDKgMUDFmkB1YkBoz0EAftd0DYBLcK6GnFAyr6xmIy7sNhvTajK1eoWyJ6dhpvJFpGsDauOrTlYlYEKDW"
+      GRAYLOG_ROOT_PASSWORD_SHA2: "d2f79ffcc92402afcfb1e1044a03e03dbedeae232c6dc4de53e842f887035e8a"
+      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
+      GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
+      GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
+    ports:
+      - "5044:5044/tcp" # Beats
+      - "5140:5140/udp" # Syslog
+      - "5140:5140/tcp" # Syslog
+      - "5555:5555/tcp" # RAW TCP
+      - "5555:5555/udp" # RAW TCP
+      - "9000:9000/tcp" # Server API
+      - "12201:12201/tcp" # GELF TCP
+      - "12201:12201/udp" # GELF UDP
+      #- "10000:10000/tcp" # Custom TCP port
+      #- "10000:10000/udp" # Custom UDP port
+      - "13301:13301/tcp" # Forwarder data
+      - "13302:13302/tcp" # Forwarder config
+    volumes:
+      - "graylog_data:/usr/share/graylog/data/data"
+      - "graylog_journal:/usr/share/graylog/data/journal"
+    restart: "on-failure"
+
+  redis-700:
+    image: "redis:7.0.0"
+    ports:
+      - "6379"
+    volumes:
+      - redis-cache:/data
+    restart: "on-failure"
+    command: "redis-server"
+
+  mariadb-10-4-30:
+    image: "mariadb:10.4.30"
+    ports:
+      - "3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=Kekasi.Co.ID
+      - MARIADB_PASSWORD=ArdityaKekasi
+      - MARIADB_USER=kekasigen
+      - MYSQL_DATABASE=restapi_socketio
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./restapi_socketio.sql:/docker-entrypoint-initdb.d/restapi_socketio.sql
+    restart: "on-failure"
+
+  restapi-socketio:
+    container_name: "restapi-socketio"
+    build:
+      context: "./."
+      dockerfile: "Dockerfile"
+    image: "restapi-socketio:0.4.1"
+    environment:
+      TZ: "Asia/Jakarta"
+    ports:
+      - "8989:8989"
+    depends_on:
+      graylog-513:
+        condition: "service_started"
+      mariadb-10-4-30:
+        condition: "service_started"
+      redis-700:
+        condition: "service_started"
+    restart: "on-failure"
+
+volumes:
+  mongodb_data:
+  os_data:
+  graylog_data:
+  graylog_journal:
+  redis-cache:
+  mariadb-data:

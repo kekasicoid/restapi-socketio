@@ -27,6 +27,6 @@ ENV TZ=Asia/Jakarta
 WORKDIR /root
 
 COPY --from=builder /go/src/github.com/kekasicoid/restapi-socketio/kekasigen .
-COPY --from=builder /go/src/github.com/kekasicoid/restapi-socketio/.env .env
+COPY --from=builder /go/src/github.com/kekasicoid/restapi-socketio/.env.example .env
 
 CMD [ "./kekasigen" ]

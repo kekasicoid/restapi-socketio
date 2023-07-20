@@ -11,6 +11,7 @@ import (
 	_keluargaSioHandler "github.com/kekasicoid/restapi-socketio/controller/socketio/keluarga/handler"
 	"github.com/kekasicoid/restapi-socketio/helper"
 	docs "github.com/kekasicoid/restapi-socketio/swagger"
+	"github.com/sirupsen/logrus"
 	"go.uber.org/ratelimit"
 
 	"github.com/gin-contrib/cors"
@@ -20,6 +21,8 @@ import (
 	"github.com/spf13/viper"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	graylog "github.com/gemnasium/logrus-graylog-hook/v3"
 )
 
 func init() {
@@ -68,8 +71,18 @@ func main() {
 	appTimeout := viper.GetInt("APP_TIMEOUT")
 	timeoutContext := time.Duration(appTimeout) * time.Second
 	validate := helper.ValidatorInit()
+
+	if viper.Get("GRAYLOG_ACTIVE").(string) == "on" {
+		// Create a new Graylog hook
+		hook := graylog.NewGraylogHook(viper.Get("GRAYLOG_URL").(string), nil)
+		logrus.AddHook(hook)
+		logrus.Info("[HTTP] RestAPI-Socketio IS RUNNING")
+	}
+
 	db := helper.DBMysqlConn()
 	helper.DbMirgrator(db)
+
+	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
 	server := socketio.NewServer(nil)
