@@ -118,5 +118,13 @@ The table will be automatically created. when running the app. Make sure the dat
 ## SQL File
 [ restapi_socketio.sql ](restapi_socketio.sql)
 
+## How to deploy in Docker (docker compose)
+```
+docker compose -f .\docker-compose.yml up -d
+```
+---------------------------------------------------------
+
 ## How to build and deploy in Docker
 [![Create & Deploy Golang Application to Docker](http://img.youtube.com/vi/smhYWlGg1zg/0.jpg)](http://www.youtube.com/watch?v=smhYWlGg1zgE)
+
+
